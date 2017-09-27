@@ -74,13 +74,12 @@ public class MainActivity extends AppCompatActivity {
             }
     }
     public void submitOrder(View view) {
-
-
         CheckBox whippedCream = (CheckBox) findViewById(R.id.whipped_cream);
         CheckBox chocolate = (CheckBox) findViewById(R.id.chocolate_checkbox);
         EditText nameText = (EditText) findViewById(R.id.nameText);
         String name = nameText.getText().toString();
         hasChocolate = chocolate.isChecked();
+
         hasWhippedCream = whippedCream.isChecked();
 
         int coffeePrice = calculatePrice(hasWhippedCream, hasChocolate);
@@ -88,16 +87,21 @@ public class MainActivity extends AppCompatActivity {
         String priceMessage = createOrderSummary(name, coffeePrice, hasWhippedCream, hasChocolate);
 
         displayMessage("Thank you for your order " + name + "!");
+        if (name == null){
+            errorToast("Please enter a name for the order.", Toast.LENGTH_LONG);
 
-        Intent sendOrder = new Intent(ACTION_SENDTO);
-        sendOrder.setData(Uri.parse("mailto:"));
-        sendOrder.putExtra(Intent.EXTRA_TEXT, createOrderSummary(name, coffeePrice, hasWhippedCream, hasChocolate));
-        sendOrder.putExtra(Intent.EXTRA_SUBJECT, "JustJava order for " + name);
-        if (sendOrder.resolveActivity(getPackageManager()) != null){
-            startActivity(sendOrder);
         }else{
-            errorToast("No email apps I guess.", Toast.LENGTH_LONG);
+            Intent sendOrder = new Intent(ACTION_SENDTO);
+            sendOrder.setData(Uri.parse("mailto:"));
+            sendOrder.putExtra(Intent.EXTRA_TEXT, createOrderSummary(name, coffeePrice, hasWhippedCream, hasChocolate));
+            sendOrder.putExtra(Intent.EXTRA_SUBJECT, "JustJava order for " + name);
+            if (sendOrder.resolveActivity(getPackageManager()) != null){
+                startActivity(sendOrder);
+            }else{
+                errorToast("No email apps I guess.", Toast.LENGTH_LONG);
+            }
         }
+
 
 
 
